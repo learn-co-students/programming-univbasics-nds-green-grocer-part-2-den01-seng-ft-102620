@@ -1,12 +1,10 @@
 def find_item_by_name_in_collection(name, collection)
-  index = 0
+ count = 0
 
-  collection.each do |grocery_item|
-    return grocery_item if grocery_item[:item] === name 
-    index += 1
+  while count < collection.length do
+    return collection[count] if collection[count][:item] === name 
+    count += 1
   end
-
-  nil
 end
 
 
