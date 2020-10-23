@@ -1,25 +1,45 @@
 require_relative './part_1_solution.rb'
+require 'pry'
 
 def apply_coupons(cart, coupons)
-  # Consult README for inputs and outputs
-  #
-  # REMEMBER: This method **should** update cart
+  counter = 0 
+  while counter < coupons.length do 
+    cart_item = find_item_by_name_in_collection(coupons[counter][:item], cart)
+    coupon_item = "#{coupons[counter][:item]} W/COUPON"
+    cart_coupon_item = find_item_by_name_in_collection(coupon_item, cart)
+    if cart_item && cart_item[:count] >= coupons[counter][:num]
+      if cart_coupon_item
+        cart_coupon_item[:count] += coupons[counter][:num]
+        cart_item[:count] -= coupons[counter][:num]
+      else
+        cart_coupon_item = {
+          :item => coupon_item,
+          :price => coupons[counter][:cost] / coupons[counter][:num],
+          :clearance => cart_item[:clearance],
+          :count => coupons[counter][:num]
+        }
+        cart << cart_coupon_item
+        cart_item[:count] -= coupons[counter][:num]
+      end
+    end
+    counter += 1 
+  end
+  cart
 end
 
 def apply_clearance(cart)
-  # Consult README for inputs and outputs
-  #
-  # REMEMBER: This method **should** update cart
+  counter = 0 
+  while counter < cart.length do
+    if cart[counter][:clearance]
+      cart[counter][:price] = (cart[counter][:price] - (cart[counter][:price] * 0.2)).round(2) 
+    end
+    counter += 1  
+  end
+  cart
 end
 
 def checkout(cart, coupons)
-  # Consult README for inputs and outputs
-  #
-  # This method should call
-  # * consolidate_cart
-  # * apply_coupons
-  # * apply_clearance
-  #
-  # BEFORE it begins the work of calculating the total (or else you might have
-  # some irritated customers
+  consolidate_cart
+  apply_coupons
+  apply_clearance
 end
